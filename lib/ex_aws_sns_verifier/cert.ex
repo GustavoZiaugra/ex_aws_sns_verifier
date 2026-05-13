@@ -76,8 +76,8 @@ defmodule ExAwsSnsVerifier.Cert do
 
     @impl true
     def get(url) do
-      with :ok <- start_app(:inets),
-           :ok <- start_app(:ssl) do
+      with :ok <- start_inets(),
+           :ok <- start_ssl() do
         case :httpc.request(
                :get,
                {String.to_charlist(url), []},
@@ -102,8 +102,16 @@ defmodule ExAwsSnsVerifier.Cert do
       end
     end
 
-    defp start_app(app) do
-      case apply(app, :start, []) do
+    defp start_inets do
+      case :inets.start() do
+        :ok -> :ok
+        {:error, {:already_started, _}} -> :ok
+        error -> error
+      end
+    end
+
+    defp start_ssl do
+      case :ssl.start() do
         :ok -> :ok
         {:error, {:already_started, _}} -> :ok
         error -> error
