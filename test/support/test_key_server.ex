@@ -6,13 +6,12 @@ defmodule ExAwsSnsVerifier.TestKeyServer do
   def start_link do
     case :ets.info(@table) do
       :undefined ->
-        :ets.new(@table, [:named_table, :public, :set, read_concurrency: true])
+        _ = :ets.new(@table, [:named_table, :public, :set, read_concurrency: true])
+        :ok
 
       _ ->
         :ok
     end
-
-    :ok
   end
 
   def generate_for_url(url) do
