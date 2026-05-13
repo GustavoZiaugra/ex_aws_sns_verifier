@@ -68,7 +68,7 @@ defmodule ExAwsSnsVerifier.MixProject do
 
   defp dialyzer do
     [
-      flags: [:error_handling, :race_conditions, :underspecs, :unmatched_returns],
+      flags: [:error_handling, :underspecs, :unmatched_returns],
       plt_add_apps: [:mix, :ex_unit]
     ]
   end
