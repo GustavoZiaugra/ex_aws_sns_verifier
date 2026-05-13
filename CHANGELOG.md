@@ -1,17 +1,18 @@
 # Changelog
 
-## 0.1.0 — 2026-05-13
+## [0.1.0] — 2026-05-13
+
+Initial release.
 
 ### Added
-
-- Initial release.
-- `ExAwsSnsVerifier.verify/2` and `ExAwsSnsVerifier.verify!/2` for RSA-SHA256
-  signature verification of SNS Notification, SubscriptionConfirmation, and
-  UnsubscribeConfirmation messages.
-- Topic ARN allowlist, timestamp replay-window, region-allowlisted
-  SigningCertURL validation.
-- `:persistent_term`-backed cert cache with 24-hour TTL (replaceable via
-  `:cert_cache` option).
-- Pluggable HTTP client (`:httpc` by default, zero runtime deps).
-- `ExAwsSnsVerifier.Plug` — a Plug adapter for Phoenix / Plug pipelines.
-- Full unit-test coverage with locally generated RSA keypairs.
+- RSA-SHA256 signature verification for `Notification`, `SubscriptionConfirmation`, and `UnsubscribeConfirmation` messages
+- Canonical string construction per AWS SNS specification
+- URL hardening: HTTPS enforcement, host whitelist (`sns.<region>.amazonaws.com`), no credentials in URL, `.pem` extension for certs
+- Certificate fetching via `:httpc` with automatic caching in `:persistent_term` (24h TTL)
+- Configurable timestamp window for replay protection
+- Topic ARN allowlist for origin restriction
+- Pluggable HTTP client via `ExAwsSnsVerifier.Cert.HttpClientBehaviour`
+- `ExAwsSnsVerifier.Plug` for Phoenix/Plug integration (module stub)
+- Comprehensive test suite with locally generated RSA keypairs
+- CI workflow with OTP 26/27/28 × Elixir 1.16–1.19 matrix
+- Full credo and dialyzer compliance
