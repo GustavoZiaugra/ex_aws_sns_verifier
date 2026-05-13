@@ -162,13 +162,13 @@ defmodule ExAwsSnsVerifier do
 
   defp validate_signature_version(_), do: {:error, :missing_signature_version}
 
-  defp validate_timestamp(_verifier, %{"Timestamp" => timestamp}) do
+  defp validate_timestamp(verifier, %{"Timestamp" => timestamp}) do
     case DateTime.from_iso8601(timestamp) do
       {:ok, dt, _} ->
         now = DateTime.utc_now()
         diff = DateTime.diff(now, dt, :second)
 
-        if abs(diff) <= @default_timestamp_window * 2,
+        if abs(diff) <= verifier.timestamp_window_seconds,
           do: :ok,
           else: {:error, :timestamp_out_of_window}
 
@@ -188,7 +188,10 @@ defmodule ExAwsSnsVerifier do
   defp validate_topic_arn(_verifier, _), do: {:error, :missing_topic_arn}
 
   defp decode_signature(%{"Signature" => sig}) when is_binary(sig) do
-    {:ok, Base.decode64!(sig)}
+    case Base.decode64(sig) do
+      {:ok, decoded} -> {:ok, decoded}
+      :error -> {:error, :invalid_signature_encoding}
+    end
   end
 
   defp decode_signature(_), do: {:error, :missing_signature}

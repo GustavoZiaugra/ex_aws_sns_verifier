@@ -10,19 +10,26 @@ defmodule ExAwsSnsVerifier.MixProject do
       version: @version,
       elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
       description: description(),
       package: package(),
       source_url: @source_url,
       docs: docs(),
-      dialyzer: dialyzer(),
-      preferred_cli_env: [dialyzer: :test, credo: :test]
+      dialyzer: dialyzer()
     ]
+  end
+
+  def cli do
+    [preferred_envs: [dialyzer: :test, credo: :test]]
   end
 
   def application do
     [extra_applications: [:logger, :crypto, :public_key, :inets, :ssl]]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp deps do
     [
