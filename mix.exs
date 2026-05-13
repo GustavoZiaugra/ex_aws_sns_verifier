@@ -10,14 +10,19 @@ defmodule ExAwsSnsVerifier.MixProject do
       version: @version,
       elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
       description: description(),
       package: package(),
       source_url: @source_url,
       docs: docs(),
       dialyzer: dialyzer(),
-      preferred_cli_env: [dialyzer: :test, credo: :test]
+
     ]
+  end
+
+  def cli do
+    [preferred_envs: [dialyzer: :test, credo: :test]]
   end
 
   def application do
@@ -31,6 +36,9 @@ defmodule ExAwsSnsVerifier.MixProject do
       {:ex_doc, "~> 0.34", only: :dev, runtime: false}
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp description do
     "Verify AWS SNS HTTPS message authenticity — RSA-SHA256 signature verification " <>

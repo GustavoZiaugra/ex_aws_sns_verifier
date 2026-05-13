@@ -131,9 +131,9 @@ defmodule ExAwsSnsVerifier do
          :ok <- validate_signature_version(payload),
          :ok <- validate_timestamp(verifier, payload),
          :ok <- validate_topic_arn(verifier, payload),
+         {:ok, public_key} <- ExAwsSnsVerifier.Cert.fetch(verifier, payload),
          {:ok, canonical} <- ExAwsSnsVerifier.Canonical.build(payload),
-         {:ok, signature} <- decode_signature(payload),
-         {:ok, public_key} <- ExAwsSnsVerifier.Cert.fetch(verifier, payload) do
+         {:ok, signature} <- decode_signature(payload) do
       if verify_rsa_sha256(canonical, signature, public_key) do
         {:ok, payload}
       else
@@ -184,7 +184,10 @@ defmodule ExAwsSnsVerifier do
   defp validate_topic_arn(_verifier, _), do: {:error, :missing_topic_arn}
 
   defp decode_signature(%{"Signature" => sig}) when is_binary(sig) do
-    {:ok, Base.decode64!(sig)}
+    case Base.decode64(sig) do
+      {:ok, decoded} -> {:ok, decoded}
+      :error -> {:error, :invalid_signature_encoding}
+    end
   end
 
   defp decode_signature(_), do: {:error, :missing_signature}
