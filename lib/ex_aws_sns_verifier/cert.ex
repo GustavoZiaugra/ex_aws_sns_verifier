@@ -7,40 +7,118 @@ defmodule ExAwsSnsVerifier.Cert do
   The cache and HTTP client are replaceable via options.
   """
 
+  alias ExAwsSnsVerifier.Url
+
   @doc """
   Fetch and decode the public key from a message's SigningCertURL.
 
   Checks cache first (`:persistent_term`), then validates the URL, downloads
   the PEM certificate, extracts the RSA public key, and caches it.
   """
-  @spec fetch(%ExAwsSnsVerifier{}, map()) :: {:ok, tuple()} | {:error, atom()}
-  def fetch(verifier, %{"SigningCertURL" => url}) do
-    # TODO: implement cert fetch with cache
-    {:error, :not_implemented}
+  @spec fetch(ExAwsSnsVerifier.t(), map()) :: {:ok, tuple()} | {:error, atom()}
+  def fetch(%ExAwsSnsVerifier{} = verifier, %{"SigningCertURL" => url}) do
+    cache = verifier.cert_cache
+    http_client = verifier.http_client
+    allowed_regions = verifier.allowed_regions
+
+    case cache.get(url) do
+      {:ok, public_key} ->
+        {:ok, public_key}
+
+      :not_found ->
+        with {:ok, _uri} <- Url.validate_signing_cert_url(url, allowed_regions),
+             {:ok, body} <- http_client.get(url),
+             {:ok, public_key} <- decode_public_key(body) do
+          cache.put(url, public_key)
+          {:ok, public_key}
+        else
+          {:error, :invalid_cert_url} = err -> err
+          {:error, reason} -> {:error, reason}
+        end
+    end
   end
 
   def fetch(_verifier, _message) do
     {:error, :missing_signing_cert_url}
   end
 
-  @doc """
-  Default HTTP client using `:httpc`.
+  defp decode_public_key(body) do
+    case :public_key.pem_decode(body) do
+      [] ->
+        {:error, :invalid_cert_format}
 
-  Fetches a URL with HTTPS, no redirect following, and a 5-second timeout.
-  """
+      [entry | _] ->
+        decoded = :public_key.pem_entry_decode(entry)
+
+        case decoded do
+          {:RSAPublicKey, _, _} ->
+            {:ok, decoded}
+
+          {:OTPCertificate, _, tbs, _} ->
+            spki = elem(tbs, 7)
+            public_key = elem(spki, 2)
+            {:ok, public_key}
+
+          _ ->
+            {:error, :invalid_cert_format}
+        end
+    end
+  end
+
   defmodule HttpClient do
+    @moduledoc """
+    Default HTTP client using `:httpc`.
+
+    Fetches a URL with HTTPS, no redirect following, and a 5-second timeout.
+    """
+
     @behaviour ExAwsSnsVerifier.Cert.HttpClientBehaviour
 
     @impl true
     def get(url) do
-      # TODO: implement :httpc-based fetch
-      {:error, :not_implemented}
+      with :ok <- start_inets(),
+           :ok <- start_ssl() do
+        case :httpc.request(
+               :get,
+               {String.to_charlist(url), []},
+               [{:timeout, 5000}, {:autoredirect, false}],
+               [{:body_format, :binary}]
+             ) do
+          {:ok, {{_, 200, _}, _, body}} ->
+            {:ok, body}
+
+          {:ok, {{_, 200}, _, body}} ->
+            {:ok, body}
+
+          {:ok, {{_, status, _}, _, _}} ->
+            {:error, {:cert_fetch_failed, status}}
+
+          {:ok, {{_, status}, _, _}} ->
+            {:error, {:cert_fetch_failed, status}}
+
+          {:error, reason} ->
+            {:error, reason}
+        end
+      end
+    end
+
+    defp start_inets do
+      case :inets.start() do
+        :ok -> :ok
+        {:error, {:already_started, _}} -> :ok
+        error -> error
+      end
+    end
+
+    defp start_ssl do
+      case :ssl.start() do
+        :ok -> :ok
+        {:error, {:already_started, _}} -> :ok
+        error -> error
+      end
     end
   end
 
-  @doc """
-  Default cert cache using `:persistent_term` with 24-hour TTL.
-  """
   defmodule Cache do
     @moduledoc """
     `:persistent_term`-backed cache with 24-hour TTL.
@@ -58,7 +136,7 @@ defmodule ExAwsSnsVerifier.Cert do
           if :erlang.monotonic_time(:second) - inserted_at < @ttl_seconds do
             {:ok, value}
           else
-            :erase.call({__MODULE__, key})
+            :persistent_term.erase({__MODULE__, key})
             :not_found
           end
 

@@ -149,13 +149,17 @@ defmodule ExAwsSnsVerifier do
     end
   end
 
-  defp validate_type(%{"Type" => type}) when type in ~w(Notification SubscriptionConfirmation UnsubscribeConfirmation),
-    do: :ok
+  defp validate_type(%{"Type" => type})
+       when type in ~w(Notification SubscriptionConfirmation UnsubscribeConfirmation),
+       do: :ok
 
   defp validate_type(_), do: {:error, :unknown_message_type}
 
   defp validate_signature_version(%{"SignatureVersion" => "2"}), do: :ok
-  defp validate_signature_version(%{"SignatureVersion" => "1"}), do: {:error, :unsupported_signature_version}
+
+  defp validate_signature_version(%{"SignatureVersion" => "1"}),
+    do: {:error, :unsupported_signature_version}
+
   defp validate_signature_version(_), do: {:error, :missing_signature_version}
 
   defp validate_timestamp(_verifier, %{"Timestamp" => timestamp}) do
