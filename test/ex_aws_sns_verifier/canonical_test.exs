@@ -50,10 +50,11 @@ defmodule ExAwsSnsVerifier.CanonicalTest do
 
   describe "build/1 for SubscriptionConfirmation" do
     test "includes all required fields" do
-      payload = TestSupport.build_subscription_confirmation_payload(
-        message: "Subscribe please",
-        token: "tok-123"
-      )
+      payload =
+        TestSupport.build_subscription_confirmation_payload(
+          message: "Subscribe please",
+          token: "tok-123"
+        )
 
       {:ok, result} = Canonical.build(payload)
 

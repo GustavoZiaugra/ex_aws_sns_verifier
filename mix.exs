@@ -16,8 +16,7 @@ defmodule ExAwsSnsVerifier.MixProject do
       package: package(),
       source_url: @source_url,
       docs: docs(),
-      dialyzer: dialyzer(),
-
+      dialyzer: dialyzer()
     ]
   end
 
@@ -63,11 +62,6 @@ defmodule ExAwsSnsVerifier.MixProject do
     [
       main: "ExAwsSnsVerifier",
       extras: ["README.md", "CHANGELOG.md"],
-      groups_for_modules: [
-        Core: [ExAwsSnsVerifier, ExAwsSnsVerifier.Canonical],
-        Infrastructure: [ExAwsSnsVerifier.Cert, ExAwsSnsVerifier.Url],
-        Integration: [ExAwsSnsVerifier.Plug]
-      ],
       source_url: @source_url,
       source_ref: "v#{@version}"
     ]

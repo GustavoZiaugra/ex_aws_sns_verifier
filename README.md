@@ -1,11 +1,15 @@
 # ExAwsSnsVerifier
 
-**TODO: Add description**
+![CI](https://github.com/GustavoZiaugra/ex_aws_sns_verifier/actions/workflows/ci.yml/badge.svg)
+[![Hex Version](https://img.shields.io/hexpm/v/ex_aws_sns_verifier)](https://hex.pm/packages/ex_aws_sns_verifier)
+
+**Verify AWS SNS HTTPS message authenticity in Elixir.**  
+The Elixir equivalent of Ruby's `Aws::SNS::MessageVerifier`.
+
+> Every major ecosystem ships an AWS-blessed SNS message validator — except Elixir.
+> This library fills that gap.
 
 ## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ex_aws_sns_verifier` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -15,7 +19,23 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/ex_aws_sns_verifier>.
+## Usage
 
+```elixir
+opts = [
+  allowed_topic_arns: ["arn:aws:sns:us-east-1:123456789012:MyTopic"]
+]
+
+case ExAwsSnsVerifier.verify(raw_body, opts) do
+  {:ok, payload} -> handle_message(payload)
+  {:error, reason} -> {:error, :unauthorized}
+end
+```
+
+## Documentation
+
+Full docs at [hexdocs.pm/ex_aws_sns_verifier](https://hexdocs.pm/ex_aws_sns_verifier).
+
+## License
+
+MIT.

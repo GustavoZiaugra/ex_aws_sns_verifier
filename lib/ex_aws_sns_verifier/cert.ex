@@ -23,6 +23,9 @@ defmodule ExAwsSnsVerifier.Cert do
 
   alias ExAwsSnsVerifier.Url
 
+  @type t() :: %ExAwsSnsVerifier{}
+  @type public_key_or_cert :: tuple()
+
   @doc """
   Fetch and decode the public key from a message's `SigningCertURL`.
 
@@ -33,7 +36,7 @@ defmodule ExAwsSnsVerifier.Cert do
   4. Extract the RSA public key from the X.509 certificate
   5. Cache the key for 24 hours
   """
-  @spec fetch(%ExAwsSnsVerifier{}, map()) :: {:ok, tuple()} | {:error, atom()}
+  @spec fetch(t(), map()) :: {:ok, public_key_or_cert()} | {:error, atom()}
   def fetch(verifier, %{"SigningCertURL" => url}) do
     with {:ok, _uri} <- Url.validate_signing_cert_url(url, verifier.allowed_regions) do
       case get_cached(verifier, url) do
@@ -72,15 +75,16 @@ defmodule ExAwsSnsVerifier.Cert do
   end
 
   defp decode_cert(pem_body) when is_binary(pem_body) do
-    try do
-      [pem_entry | _] = :public_key.pem_decode(pem_body)
-      cert = :public_key.pem_entry_decode(pem_entry)
+    case :public_key.pem_decode(pem_body) do
+      [pem_entry | _] ->
+        cert = :public_key.pem_entry_decode(pem_entry)
+        {:ok, cert}
 
-      # :public_key.verify/4 accepts the decoded certificate directly
-      {:ok, cert}
-    rescue
-      _ -> {:error, :invalid_cert_pem}
+      [] ->
+        {:error, :invalid_cert_pem}
     end
+  rescue
+    _ -> {:error, :invalid_cert_pem}
   end
 
   # ── HTTP Client (default: :httpc) ──────────────────────────────────────────

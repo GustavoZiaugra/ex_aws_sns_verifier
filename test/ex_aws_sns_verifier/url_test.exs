@@ -23,22 +23,30 @@ defmodule ExAwsSnsVerifier.UrlTest do
 
     test "rejects host outside allowed regions" do
       url = "https://sns.eu-south-2.amazonaws.com/SimpleNotificationService-abc123.pem"
-      assert {:error, :invalid_cert_url_host} = Url.validate_signing_cert_url(url, @allowed_regions)
+
+      assert {:error, :invalid_cert_url_host} =
+               Url.validate_signing_cert_url(url, @allowed_regions)
     end
 
     test "rejects URL with userinfo" do
       url = "https://user:pass@sns.us-east-1.amazonaws.com/SimpleNotificationService-abc123.pem"
-      assert {:error, :url_contains_credentials} = Url.validate_signing_cert_url(url, @allowed_regions)
+
+      assert {:error, :url_contains_credentials} =
+               Url.validate_signing_cert_url(url, @allowed_regions)
     end
 
     test "rejects non-.pem extension" do
       url = "https://sns.us-east-1.amazonaws.com/cert.html"
-      assert {:error, :invalid_cert_url_extension} = Url.validate_signing_cert_url(url, @allowed_regions)
+
+      assert {:error, :invalid_cert_url_extension} =
+               Url.validate_signing_cert_url(url, @allowed_regions)
     end
 
     test "rejects missing path" do
       url = "https://sns.us-east-1.amazonaws.com"
-      assert {:error, :invalid_cert_url_extension} = Url.validate_signing_cert_url(url, @allowed_regions)
+
+      assert {:error, :invalid_cert_url_extension} =
+               Url.validate_signing_cert_url(url, @allowed_regions)
     end
 
     test "rejects invalid URL string" do
@@ -70,7 +78,9 @@ defmodule ExAwsSnsVerifier.UrlTest do
 
     test "rejects URL with userinfo" do
       url = "https://user:pass@sns.us-east-1.amazonaws.com/?Action=ConfirmSubscription"
-      assert {:error, :url_contains_credentials} = Url.validate_subscribe_url(url, @allowed_regions)
+
+      assert {:error, :url_contains_credentials} =
+               Url.validate_subscribe_url(url, @allowed_regions)
     end
   end
 

@@ -166,9 +166,7 @@ defmodule ExAwsSnsVerifierTest do
 
     test "returns error when TopicArn not allowed" do
       payload =
-        TestSupport.build_notification_payload(
-          topic_arn: "arn:aws:sns:us-east-1:1:OtherTopic"
-        )
+        TestSupport.build_notification_payload(topic_arn: "arn:aws:sns:us-east-1:1:OtherTopic")
 
       assert {:error, :topic_not_allowed} =
                ExAwsSnsVerifier.verify(Jason.encode!(payload),

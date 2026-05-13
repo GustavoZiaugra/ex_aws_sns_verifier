@@ -92,7 +92,8 @@ defmodule ExAwsSnsVerifier.TestSupport do
       "Message\n#{payload["Message"]}\n",
       "MessageId\n#{payload["MessageId"]}\n",
       if(payload["Subject"] && payload["Subject"] != "",
-        do: "Subject\n#{payload["Subject"]}\n"),
+        do: "Subject\n#{payload["Subject"]}\n"
+      ),
       "Timestamp\n#{payload["Timestamp"]}\n",
       "TopicArn\n#{payload["TopicArn"]}\n",
       "Type\n#{payload["Type"]}\n"

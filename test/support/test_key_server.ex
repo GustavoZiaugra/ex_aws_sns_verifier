@@ -12,6 +12,7 @@ defmodule ExAwsSnsVerifier.TestKeyServer do
       :undefined ->
         :ets.new(@name, [:named_table, :public, :set])
         :ok
+
       _ ->
         :ok
     end
