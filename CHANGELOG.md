@@ -5,6 +5,7 @@
 Initial release.
 
 ### Added
+
 - RSA-SHA256 signature verification for `Notification`, `SubscriptionConfirmation`, and `UnsubscribeConfirmation` messages
 - Canonical string construction per AWS SNS specification
 - URL hardening: HTTPS enforcement, host whitelist (`sns.<region>.amazonaws.com`), no credentials in URL, `.pem` extension for certs
