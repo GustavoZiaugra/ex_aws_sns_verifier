@@ -33,7 +33,7 @@ Add `ex_aws_sns_verifier` to your `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_aws_sns_verifier, "~> 0.1.0"}
+    {:ex_aws_sns_verifier, "~> 0.2.0"}
   ]
 end
 ```
