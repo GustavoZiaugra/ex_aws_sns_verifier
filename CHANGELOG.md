@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0] — 2026-05-16
+
+### Added
+
+- `ExAwsSnsVerifier.Plug` — a Plug behaviour module for verifying SNS messages in Plug/Phoenix pipelines
+- `{:plug, "~> 1.0"}` runtime dependency
+
 ## [0.1.0] — 2026-05-13
 
 Initial release.
