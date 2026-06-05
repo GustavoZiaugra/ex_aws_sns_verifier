@@ -14,7 +14,7 @@ env:
 
 jobs:
   test:
-    name: Test (OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}})
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -26,6 +26,9 @@ jobs:
             elixir: "1.16"
           - otp: "28"
             elixir: "1.17"
+        include:
+          - otp: "29"
+            elixir: "1.20"
 
     steps:
       - uses: actions/checkout@v4
@@ -36,17 +39,6 @@ jobs:
       - run: mix deps.get
       - run: mix compile --warnings-as-errors
       - run: mix test
-
-  quality:
-    name: Quality (format + credo + dialyzer)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: erlef/setup-beam@v1
-        with:
-          otp-version: "28"
-          elixir-version: "1.19"
-      - run: mix deps.get
       - run: mix format --check-formatted
       - run: mix credo --strict
       - run: mix dialyzer
