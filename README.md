@@ -24,7 +24,7 @@ No runtime dependencies — uses `:public_key` for RSA verification and `:httpc`
 - 🧩 **Plug integration** — `ExAwsSnsVerifier.Plug` for Phoenix / Plug pipelines
 - ⚡ **Consistent error handling** — `verify/2` returns `{:ok, payload}` or `{:error, reason}`; `verify!/2` raises
 - 📦 **Zero runtime dependencies** — no Jason, no HTTPoison, no extra baggage
-- 🧪 **Fully tested** — matrix across OTP 26–28 and Elixir 1.16–1.19
+- 🧪 **Fully tested** — matrix across OTP 26–29 and Elixir 1.16–1.20
 
 ## Installation
 
