@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Support for Elixir 1.20.0 and OTP 29
+
+### Fixed
+
+- Elixir 1.20 compatibility: verified clean compilation, tests, credo, and dialyzer on OTP 29
+
 ## [0.2.0] — 2026-05-16
 
 ### Added
@@ -22,5 +32,5 @@ Initial release.
 - Pluggable HTTP client via `ExAwsSnsVerifier.Cert.HttpClientBehaviour`
 - `ExAwsSnsVerifier.Plug` for Phoenix/Plug integration (module stub)
 - Comprehensive test suite with locally generated RSA keypairs
-- CI workflow with OTP 26/27/28 × Elixir 1.16–1.19 matrix
+- CI workflow with OTP 26–29 × Elixir 1.16–1.20 matrix
 - Full credo and dialyzer compliance
