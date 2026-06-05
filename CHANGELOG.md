@@ -1,14 +1,20 @@
 # Changelog
 
-## Unreleased
+## [0.2.1] — 2026-06-05
 
 ### Added
 
 - Support for Elixir 1.20.0 and OTP 29
+- CI: quality checks (format, credo, dialyzer) now run inside the test matrix on every OTP/Elixir combination
 
 ### Fixed
 
 - Elixir 1.20 compatibility: verified clean compilation, tests, credo, and dialyzer on OTP 29
+
+### Changed
+
+- Updated `ex_doc` 0.40.2 → 0.40.3 (dev-only)
+- Test coverage: 61.63% → 81.98% with new tests for `Url`, `Cert`, and `HttpClient` modules
 
 ## [0.2.0] — 2026-05-16
 
