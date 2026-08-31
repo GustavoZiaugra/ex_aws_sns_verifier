@@ -37,7 +37,7 @@ defmodule ExAwsSnsVerifier.MixProject do
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false},
       {:jason, "~> 1.0"},
-      {:plug, "~> 1.0"}
+      {:plug, ">= 1.19.5 and < 2.0.0"}
     ]
   end
 
