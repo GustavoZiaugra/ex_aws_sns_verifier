@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.2] — 2026-08-30
+
+### Security
+
+- Upgrade `plug` 1.19.2 → 1.20.3 to fix three advisories:
+  - EEF-CVE-2026-54892 (HIGH) — quadratic-time decoding of nested query/body parameters enables denial of service
+  - EEF-CVE-2026-56813 (LOW) — cookie attribute injection in `Plug.Conn.Cookies.encode/2`
+  - EEF-CVE-2026-56814 (MEDIUM) — multipart `:length` limit is not charged for part headers, enabling unbounded temp-file creation
+- Raise the `plug` requirement from `~> 1.0` to `>= 1.19.5 and < 2.0.0` so consumers cannot resolve vulnerable versions
+- Update `plug_crypto` 2.1.1 → 2.2.0
+
+### Changed
+
+- Bump dev Elixir pin from 1.20.0 to 1.20.4 (`.tool-versions`)
+
 ## [0.2.1] — 2026-06-05
 
 ### Added
