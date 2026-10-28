@@ -10,6 +10,11 @@
   CVE-2026-105963 (secret key base exposure in stack trace arguments on
   wrong-typed `Plug.Crypto` arguments).
 
+### Changed
+
+- Updated development dependencies (`credo`, `dialyxir`, `ex_doc`) and
+  `actions/checkout` to v7. No runtime API changes.
+
 ### Upgrade notes
 
 - Encrypted sessions must use `key_length: 32`; values of `16` or `24` now raise
