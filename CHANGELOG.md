@@ -7,9 +7,13 @@
 - Require `plug_crypto >= 2.2.1` and update the lockfile to 2.2.1, fixing
   CVE-2026-105963 (secret key base exposure in stack trace arguments on
   wrong-typed `Plug.Crypto` arguments).
-- Document the encrypted-session migration: `key_length: 16`/`24` must become
-  `32`, old cookies can be read through `rotating_options` where supported, and
-  mixed Plug.Crypto 1.x/2.x rollouts are not safe.
+
+### Upgrade notes
+
+- Encrypted sessions must use `key_length: 32`; values of `16` or `24` now raise
+  when a session is written. Old cookies can be read through
+  `rotating_options` where supported. Do not run a mixed Plug.Crypto 1.x/2.x
+  rollout — see the README section “Upgrading to plug_crypto 2.2.1”.
 
 ## [0.2.2] — 2026-08-30
 
