@@ -44,6 +44,39 @@ Then run:
 mix deps.get
 ```
 
+## Upgrading to plug_crypto 2.2.1
+
+This release requires `plug_crypto >= 2.2.1` to fix
+[CVE-2026-105963](https://osv.dev/vulnerability/EEF-CVE-2026-105963).
+
+If your application uses encrypted cookie sessions (`Plug.Session` with
+`encryption_salt`), Plug.Crypto 2.x encrypts new cookies with
+XChaCha20-Poly1305 and requires a 32-byte key:
+
+- Set `key_length: 32` (or omit it; 32 is the default). Values of `16` or `24`
+  now raise when an encrypted session is written.
+- Plug.Crypto 2.x can still decrypt old 1.x cookies when given the previous
+  options. To keep old cookies readable during the transition, configure them
+  under `rotating_options` and verify the result against your Plug version:
+
+  ```elixir
+  plug Plug.Session,
+    store: :cookie,
+    key: "_my_app_session",
+    signing_salt: "...",
+    encryption_salt: "...",
+    key_length: 32,
+    rotating_options: [
+      [key_length: 24, signing_salt: "...", encryption_salt: "..."]
+    ]
+  ```
+
+  If `rotating_options` cannot read the old cookies in your deployment, force a
+  fresh login instead.
+- Do not run a mixed Plug.Crypto 1.x/2.x rollout: 1.x nodes cannot decrypt
+  cookies written by 2.x. Upgrade all nodes together, or use a new cookie
+  key/name for 2.x and let old sessions expire.
+
 ## Quick Start
 
 ### 1. One-shot verification

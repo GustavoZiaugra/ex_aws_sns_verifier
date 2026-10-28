@@ -32,6 +32,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: erlef/setup-beam@v1
         with:
           otp-version: ${{matrix.otp}}
@@ -42,3 +44,25 @@ jobs:
       - run: mix format --check-formatted
       - run: mix credo --strict
       - run: mix dialyzer
+
+  security:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '29'
+          elixir-version: '1.20'
+      - name: Install dependencies
+        run: mix deps.get
+      - name: Reject project-level advisory ignores
+        run: |
+          if grep -n "ignore_advisories" mix.exs; then
+            echo "::error file=mix.exs::ignore_advisories is not allowed in CI; fix the dependency instead."
+            exit 1
+          fi
+      - name: Audit dependencies for known CVEs
+        run: mix hex.audit
