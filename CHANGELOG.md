@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.3] — 2026-10-28
+
 ### Security
 
 - Require `plug_crypto >= 2.2.1` and update the lockfile to 2.2.1, fixing
