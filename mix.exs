@@ -39,7 +39,9 @@ defmodule ExAwsSnsVerifier.MixProject do
       {:jason, "~> 1.0"},
       {:plug, ">= 1.19.5 and < 2.0.0"},
       # Floor >= 2.2.1 fixes CVE-2026-105963 (secret key base exposure in
-      # stack trace arguments on wrong-typed Plug.Crypto arguments)
+      # stack trace arguments on wrong-typed Plug.Crypto arguments).
+      # Encrypted sessions must use key_length: 32; see README
+      # "Upgrading to plug_crypto 2.2.1".
       {:plug_crypto, ">= 2.2.1 and < 3.0.0", optional: true}
     ]
   end
