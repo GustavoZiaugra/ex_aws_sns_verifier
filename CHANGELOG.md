@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.2.4] — 2026-11-23
+
+### Changed
+
+- Updated `plug` 1.20.3 → 1.20.4 and the `dialyxir` development dependency
+  to 1.4.9. No API changes.
+
 ## [0.2.3] — 2026-10-28
 
 ### Security
